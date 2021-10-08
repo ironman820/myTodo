@@ -1,12 +1,8 @@
-from django.shortcuts import render
-from django.views.generic import ListView
-from rest_framework import serializers
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Task
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer, TaskListSerializer
 
 # Create your views here.
 class apiOverview(APIView):
@@ -29,7 +25,7 @@ class taskList(APIView):
 
     def get(self, request, format=None):
         tasks = Task.objects.all()
-        serializer  = TaskSerializer(tasks, many=True, context={'request': request})
+        serializer  = TaskListSerializer(tasks, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -44,13 +40,13 @@ class taskDetail(APIView):
     description = 'View, update, or delete a specific task.'
     
     def get(self, request, pk, format=None):
-        tasks = Task.objects.get(pk=pk)
-        serializer  = TaskSerializer(tasks, many=False, context={'request':request})
+        task = Task.objects.get(pk=pk)
+        serializer  = TaskSerializer(task, many=False)
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
         task = Task.objects.get(pk=pk)
-        serializer  = TaskSerializer(instance=task, data=request.data, context={'request':request})
+        serializer  = TaskSerializer(instance=task, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
