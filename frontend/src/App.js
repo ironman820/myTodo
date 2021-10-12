@@ -96,7 +96,8 @@ class App extends React.Component {
           id:null,
           title:'',
           completed:false,
-        }
+        },
+        editing: false,
       })
     }).catch(function(error){
       console.log('Error:', error)
